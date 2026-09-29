@@ -1,0 +1,29 @@
+LITESOUT for OS/2 -- Changelog
+================================
+
+Version 1.1  (2026-09-29)
+--------------------------
+  - 32-bit OS/2 Presentation Manager port from Borland OWL original
+  - Plain C, OpenWatcom 2.0, no C++ or OWL dependency
+  - 6-language runtime switching: EN, ES, NL, DE, FR, IT
+  - Keyboard shortcuts: Ctrl+N (New), Ctrl+T (Top Ten), Ctrl+F (Frame),
+    Ctrl+X (Exit)
+  - Binary settings file (litesout.cfg): saves difficulty, language,
+    and 20 high-score entries
+  - Top Ten Scores dialog with separate Easy / Hard tables
+  - Enter Name dialog when a new high score is achieved
+  - Frame Controls toggle (hides title bar and menu bar)
+  - Hard mode: cycling 3-state blocks; Easy mode: simple on/off
+  - Scramble animation on New Game using scramble cursors
+  - PM coordinate system Y-flip applied throughout
+  - BLDLEVEL string embedded in executable
+  - BSD 3-Clause License applied to 32-bit port
+
+
+Version 1.0  (1997)
+--------------------
+  - Original release by Herbert Bushong
+  - Borland OWL / 16-bit / 32-bit Borland C++ build
+  - Easy and Hard mode
+  - Top Ten scores, Enter Name dialog
+  - Scramble animation

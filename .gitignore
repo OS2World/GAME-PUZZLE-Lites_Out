@@ -1,0 +1,7 @@
+*.obj
+*.res
+*.map
+*.exe
+*.bak
+bin/
+compile-wat.log

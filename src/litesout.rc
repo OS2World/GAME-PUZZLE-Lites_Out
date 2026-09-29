@@ -1,0 +1,106 @@
+/*----------------------------------------------------------
+   LITESOUT.RC resource script
+   LitesOut for OS/2, 32-bit PM port (OpenWatcom)
+  ----------------------------------------------------------*/
+
+#define INCL_PM
+#include <os2.h>
+#include "litesout.h"
+
+POINTER ID_RESOURCE LITESOUT.ICO
+
+BITMAP  BMP_OFF      OFF.BMP
+BITMAP  BMP_ON1      ON1.BMP
+BITMAP  BMP_ON2      ON2.BMP
+BITMAP  BMP_FLASHOFF FLASHOFF.BMP
+BITMAP  BMP_FLASHON1 FLASHON1.BMP
+BITMAP  BMP_FLASHON2 FLASHON2.BMP
+BITMAP  BMP_HITS     HITS.BMP
+BITMAP  BMP_MODE     MODE.BMP
+
+POINTER CUR_MALET    FINGER.PTR
+POINTER CUR_MALETDWN HAND.PTR
+POINTER CUR_SCR1     SCR1.PTR
+POINTER CUR_SCR2     SCR2.PTR
+POINTER CUR_SCR3     SCR3.PTR
+POINTER CUR_SCR4     SCR4.PTR
+
+MENU ID_RESOURCE
+     {
+     SUBMENU  "~Game",                             IDM_SUBMENU_GAME
+          {
+          MENUITEM "~New Game\tCtrl+N",             IDM_NEW
+          MENUITEM SEPARATOR
+          MENUITEM "E~xit\tCtrl+X",                IDM_EXIT
+          }
+     SUBMENU  "~Options",                          IDM_SUBMENU_OPTIONS
+          {
+          MENUITEM "~Hard Mode",                    IDM_HARDMODE
+          MENUITEM "~Top Ten Scores\tCtrl+T",       IDM_TOPTEN
+          MENUITEM SEPARATOR
+          SUBMENU  "~Language",                     IDM_SUBMENU_LANG
+               {
+               MENUITEM "English",                  IDM_LANG_EN, MIA_CHECKED
+               MENUITEM "Espanol",                  IDM_LANG_ES
+               MENUITEM "Nederlands",               IDM_LANG_NL
+               MENUITEM "Deutsch",                  IDM_LANG_DE
+               MENUITEM "Francais",                 IDM_LANG_FR
+               MENUITEM "Italiano",                 IDM_LANG_IT
+               }
+          MENUITEM SEPARATOR
+          MENUITEM "~Frame Controls\tCtrl+F",       IDM_FRAME
+          MENUITEM SEPARATOR
+          MENUITEM "~Save settings on exit",        IDM_SAVEONEXIT
+          }
+     SUBMENU  "~Help",                             IDM_SUBMENU_HELP
+          {
+          MENUITEM "~About...",                     IDM_ABOUT
+          }
+     }
+
+ACCELTABLE ID_RESOURCE
+     {
+     "n",  IDM_NEW,    CONTROL
+     "N",  IDM_NEW,    CONTROL
+     "x",  IDM_EXIT,   CONTROL
+     "X",  IDM_EXIT,   CONTROL
+     "t",  IDM_TOPTEN, CONTROL
+     "T",  IDM_TOPTEN, CONTROL
+     "f",  IDM_FRAME,  CONTROL
+     "F",  IDM_FRAME,  CONTROL
+     }
+
+DLGTEMPLATE IDD_ABOUT
+     {
+     DIALOG "About LitesOut", 0, 32, 24, 240, 110,, FCF_TITLEBAR|FCF_DLGBORDER
+          {
+          CTEXT "LitesOut for OS/2",                    -1, 10, 88, 220, 8
+          CTEXT "Version 1.1",                           -1, 10, 76, 220, 8
+          CTEXT "OpenWatcom Release",                   -1, 10, 64, 220, 8
+          CTEXT "(c) 1996, 1997 Herbert Bushong",       -1, 10, 52, 220, 8
+          CTEXT "(c) 2026, OS2World",                    -1, 10, 40, 220, 8
+          CTEXT "BSD 3-Clause License",                 -1, 10, 28, 220, 8
+          DEFPUSHBUTTON "OK" DID_OK,                   98, 10, 44, 14, WS_GROUP
+          }
+     }
+
+DLGTEMPLATE IDD_TOPTEN
+     {
+     DIALOG "Top Ten Scores", 0, 20, 20, 260, 140,, FCF_TITLEBAR|FCF_DLGBORDER
+          {
+          CONTROL "", IDC_LB_TOPTEN, 5, 25, 250, 105, WC_LISTBOX,
+                  WS_VISIBLE|LS_NOADJUSTPOS
+          DEFPUSHBUTTON "Close" DID_OK, 105, 5, 50, 14, WS_GROUP
+          }
+     }
+
+DLGTEMPLATE IDD_ENTERNAME
+     {
+     DIALOG "New High Score!", 0, 32, 32, 230, 68,, FCF_TITLEBAR|FCF_DLGBORDER
+          {
+          LTEXT "" IDC_PROMPT_TXT, 5, 48, 220, 12
+          CONTROL "" IDC_ENTERNAME, 5, 30, 220, 12, WC_ENTRYFIELD,
+                  WS_VISIBLE|ES_MARGIN
+          DEFPUSHBUTTON "OK" DID_OK, 90, 8, 50, 14, WS_GROUP
+          }
+     }
