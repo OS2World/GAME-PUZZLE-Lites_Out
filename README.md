@@ -5,6 +5,8 @@ LitesOut is a clone of the Electronic game "Lights Out", ported to OS/2
 clicking blocks — each click toggles the block and its four neighbors.
 An optional Hard mode adds a third state, making it more challenging.
 
+![LitesOut](/doc/LitesOut.png)
+
 Version 1.1 is a complete rewrite from the original Borland OWL source
 to plain C with OpenWatcom 2.0.
 
