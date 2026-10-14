@@ -37,6 +37,15 @@ enum {
     STR_TOPTEN_HARD,
     STR_CLOSE,
     STR_OK,
+    STR_MENU_KEYMAP,
+    STR_KM_TITLE,
+    STR_KM_HINT,
+    STR_KM_ACT0,
+    STR_KM_BTN1,
+    STR_KM_BTN2,
+    STR_KM_BTN3,
+    STR_KM_DEFAULT,
+    STR_CANCEL,
     STR_COUNT
 };
 

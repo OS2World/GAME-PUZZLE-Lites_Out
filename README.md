@@ -5,7 +5,8 @@ LitesOut is a clone of the Electronic game "Lights Out", ported to OS/2
 clicking blocks — each click toggles the block and its four neighbors.
 An optional Hard mode adds a third state, making it more challenging.
 
-Version 1.1 is a complete rewrite from the original Borland OWL source
+Version 1.2 adds Key Mapping for the mouse button and a fixed Frame Controls
+toggle.  Version 1.1 was a complete rewrite from the original Borland OWL source
 to plain C with OpenWatcom 2.0.
 
 ## Features
@@ -15,7 +16,9 @@ to plain C with OpenWatcom 2.0.
 - Top Ten Scores table, separately for Easy and Hard
 - 6-language runtime switching (EN, ES, NL, DE, FR, IT)
 - Frame Controls toggle: hide/show title bar and menu for full puzzle view
-- Persistent settings (difficulty, language, high scores) via litesout.cfg
+- Persistent settings (difficulty, language, high scores, mouse button) via litesout.cfg
+- Key Mapping (Options > Key Mapping...): choose the mouse button that hits a block
+  (left button by default); translated in all six languages
 - Keyboard shortcuts: Ctrl+N, Ctrl+T, Ctrl+F, Ctrl+X
 - BLDLEVEL string in executable
 
@@ -23,7 +26,7 @@ to plain C with OpenWatcom 2.0.
 
 | Key / Action           | Function                       |
 |------------------------|--------------------------------|
-| Left-click on a block  | Toggle block and neighbors     |
+| Left-click on a block  | Toggle block and neighbors (button set in Key Mapping) |
 | Ctrl+N                 | New Game                       |
 | Ctrl+T                 | Top Ten Scores                 |
 | Ctrl+F                 | Toggle Frame Controls          |

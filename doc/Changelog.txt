@@ -1,6 +1,18 @@
 LITESOUT for OS/2 -- Changelog
 ================================
 
+Version 1.2  (2026-10-13)
+--------------------------
+  - New Options > Key Mapping... dialog (mouse only): choose the mouse button
+    that hits a block (left button by default); the other buttons are
+    ignored. The choice is saved in litesout.cfg (older files keep working)
+    and the dialog is translated in all six languages
+  - Frame Controls (Ctrl+F) rewritten: the title bar, system menu, minimize
+    button and menu are shown again explicitly when the controls come back,
+    the window keeps its client area (it shrinks and grows around it) and
+    the check mark follows the state
+  - About dialog, BLDLEVEL string and documentation updated to version 1.2
+
 Version 1.1  (2026-09-29)
 --------------------------
   - 32-bit OS/2 Presentation Manager port from Borland OWL original

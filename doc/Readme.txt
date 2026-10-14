@@ -1,4 +1,4 @@
-LITESOUT for OS/2 -- Version 1.1
+LITESOUT for OS/2 -- Version 1.2
 =================================
 
 LitesOut is an OS/2 32-bit Presentation Manager puzzle game based on
@@ -11,7 +11,8 @@ available: Easy (3-state blocks) and Hard (cycling blocks).
 
 CONTROLS
 --------
-  Left-click on a block   Toggle block and neighbors
+  Left-click on a block   Toggle block and neighbors (the mouse button
+                          can be changed in Options > Key Mapping)
   Ctrl+N                  New Game
   Ctrl+T                  Top Ten Scores
   Ctrl+F                  Toggle Frame Controls (title bar and menu)
@@ -25,6 +26,9 @@ MENUS
 
   Options > Hard Mode     Toggle Easy/Hard difficulty
   Options > Top Ten Scores  View the high-score table
+  Options > Key Mapping   Choose the mouse button that hits a block: click the
+                          box, then click it again with the button to use
+                          (left button by default; saved in litesout.cfg)
   Options > Language      Switch display language (EN/ES/NL/DE/FR/IT)
   Options > Frame Controls  Show or hide the title bar and menu
   Options > Save settings on exit  Persist settings to litesout.cfg

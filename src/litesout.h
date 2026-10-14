@@ -40,6 +40,7 @@
 #define IDM_HARDMODE   200
 #define IDM_TOPTEN     201
 #define IDM_FRAME      203
+#define IDM_KEYMAP     205
 #define IDM_SAVEONEXIT 204
 
 /* Language submenu IDs (300-399) */
@@ -63,11 +64,16 @@
 #define IDD_ABOUT       1
 #define IDD_TOPTEN      2
 #define IDD_ENTERNAME   3
+#define IDD_KEYMAP      4
 
 /* Dialog control IDs */
 #define IDC_LB_TOPTEN   50
 #define IDC_ENTERNAME   51
 #define IDC_PROMPT_TXT  52
+#define IDC_KM_HINT     60
+#define IDC_KM_LABEL    61
+#define IDC_KM_ENTRY    62
+#define IDC_KM_DEFAULT  63
 
 /* Bitmap resource IDs */
 #define BMP_OFF       300

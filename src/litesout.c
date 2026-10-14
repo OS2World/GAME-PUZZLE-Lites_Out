@@ -5,7 +5,7 @@
   --------------------------------------------------------------------*/
 
 const char bldlevel[] =
-    "@#Herbert Bushong:1.1#@##1## 29 Sep 2026 00:00:00      "
+    "@#Herbert Bushong:1.2#@##1## 13 Oct 2026 00:00:00      "
     "ARCAOS:::0::::@@LitesOut puzzle game for OS/2 (32-bit PM)\r\n\x1a";
 
 #define INCL_BITMAPFILEFORMAT
@@ -57,7 +57,8 @@ const char *lang_strings[LANG_COUNT][STR_COUNT] = {
       "Switch to Hard mode?","Switch to Easy mode?",
       "Mode","Easy","Hard",
       "Enter your name:","Top Ten Scores - Easy","Top Ten Scores - Hard",
-      "Close","OK" },
+      "Close","OK",
+      "~Key Mapping...","Key Mapping","Click the box, then click it again with the mouse button to use.","Hit a block","Left button","Right button","Middle button","Default","Cancel" },
     /* ES */
     { "~Juego","~Nuevo Juego\tCtrl+N","~Salir\tCtrl+X",
       "~Opciones","Modo ~Dificil","~Top 10 Puntuaciones\tCtrl+T",
@@ -67,7 +68,8 @@ const char *lang_strings[LANG_COUNT][STR_COUNT] = {
       "Cambiar a modo Dificil?","Cambiar a modo Facil?",
       "Modo","Facil","Dificil",
       "Ingresa tu nombre:","Top 10 - Facil","Top 10 - Dificil",
-      "Cerrar","Aceptar" },
+      "Cerrar","Aceptar",
+      "~Asignacion de teclas...","Asignacion de teclas","Haga clic en el cuadro y de nuevo con el boton del raton que quiera usar.","Pulsar un bloque","Boton izquierdo","Boton derecho","Boton central","Por defecto","Cancelar" },
     /* NL */
     { "~Spel","~Nieuw Spel\tCtrl+N","~Afsluiten\tCtrl+X",
       "~Opties","~Moeilijke Modus","~Top Tien\tCtrl+T",
@@ -77,7 +79,8 @@ const char *lang_strings[LANG_COUNT][STR_COUNT] = {
       "Wisselen naar Moeilijk?","Wisselen naar Gemakkelijk?",
       "Modus","Gemakkelijk","Moeilijk",
       "Voer je naam in:","Top Tien - Gemakkelijk","Top Tien - Moeilijk",
-      "Sluiten","OK" },
+      "Sluiten","OK",
+      "Toetsen toe~wijzen...","Toetsen toewijzen","Klik op het vak en klik er nogmaals op met de muisknop die u wilt gebruiken.","Blok raken","Linkerknop","Rechterknop","Middelste knop","Standaard","Annuleren" },
     /* DE */
     { "~Spiel","~Neues Spiel\tCtrl+N","~Beenden\tCtrl+X",
       "~Optionen","Schwerer ~Modus","~Bestenliste\tCtrl+T",
@@ -87,7 +90,8 @@ const char *lang_strings[LANG_COUNT][STR_COUNT] = {
       "Zum schweren Modus wechseln?","Zum leichten Modus wechseln?",
       "Modus","Leicht","Schwer",
       "Gib deinen Namen ein:","Bestenliste - Leicht","Bestenliste - Schwer",
-      "Schliessen","OK" },
+      "Schliessen","OK",
+      "~Tastenzuordnung...","Tastenzuordnung","Klicken Sie auf das Feld und dann erneut mit der gewuenschten Maustaste.","Block schlagen","Linke Taste","Rechte Taste","Mittlere Taste","Standard","Abbrechen" },
     /* FR */
     { "~Jeu","~Nouveau Jeu\tCtrl+N","~Quitter\tCtrl+X",
       "~Options","Mode ~Difficile","~Meilleurs Scores\tCtrl+T",
@@ -97,7 +101,8 @@ const char *lang_strings[LANG_COUNT][STR_COUNT] = {
       "Passer en mode Difficile?","Passer en mode Facile?",
       "Mode","Facile","Difficile",
       "Entrez votre nom:","Meilleurs Scores - Facile","Meilleurs Scores - Difficile",
-      "Fermer","OK" },
+      "Fermer","OK",
+      "~Affectation des touches...","Affectation des touches","Cliquez sur la case, puis cliquez dessus avec le bouton de souris voulu.","Frapper un bloc","Bouton gauche","Bouton droit","Bouton central","Defaut","Annuler" },
     /* IT */
     { "~Gioco","~Nuovo Gioco\tCtrl+N","~Esci\tCtrl+X",
       "~Opzioni","Modalita ~Difficile","~Punteggi\tCtrl+T",
@@ -107,7 +112,8 @@ const char *lang_strings[LANG_COUNT][STR_COUNT] = {
       "Passare alla modalita Difficile?","Passare alla modalita Facile?",
       "Modalita","Facile","Difficile",
       "Inserisci il tuo nome:","Punteggi - Facile","Punteggi - Difficile",
-      "Chiudi","OK" },
+      "Chiudi","OK",
+      "Assegnazione ~tasti...","Assegnazione tasti","Fai clic sulla casella, poi di nuovo con il pulsante del mouse da usare.","Colpisci un blocco","Pulsante sinistro","Pulsante destro","Pulsante centrale","Predefinito","Annulla" },
 };
 
 /*--- bitmap info ---*/
@@ -150,6 +156,9 @@ static HISENTRY hiscores[20];
 /*--- settings ---*/
 static int save_on_exit = 1;
 
+/* Mouse button (1 left, 2 right, 3 middle) that hits a block (Key Mapping) */
+static int btn_hit = 1;
+
 #define CONFIG_FILE "litesout.cfg"
 
 /*--- forward declarations ---*/
@@ -163,6 +172,7 @@ MRESULT EXPENTRY ClientWndProc(HWND, ULONG, MPARAM, MPARAM);
 MRESULT EXPENTRY AboutDlgProc (HWND, ULONG, MPARAM, MPARAM);
 MRESULT EXPENTRY TopTenDlgProc(HWND, ULONG, MPARAM, MPARAM);
 MRESULT EXPENTRY EnterNameDlgProc(HWND, ULONG, MPARAM, MPARAM);
+MRESULT EXPENTRY KeyMapDlgProc(HWND, ULONG, MPARAM, MPARAM);
 
 /*======================================================================
    CONFIG
@@ -184,7 +194,9 @@ static void load_settings(void)
     fread(&maxstate,     sizeof(int), 1, fp);
     fread(&current_lang, sizeof(int), 1, fp);
     fread(hiscores, sizeof(hiscores), 1, fp);
+    if (fread(&btn_hit, sizeof(int), 1, fp) != 1) btn_hit = 1;
     fclose(fp);
+    if (btn_hit < 1 || btn_hit > 3) btn_hit = 1;
     if (save_on_exit < 0 || save_on_exit > 1)         save_on_exit = 1;
     if (maxstate != MODEEASY && maxstate != MODEHARD) maxstate = MODEEASY;
     if (current_lang < 0 || current_lang >= LANG_COUNT) current_lang = LANG_EN;
@@ -198,6 +210,7 @@ static void save_settings(void)
     fwrite(&maxstate,     sizeof(int), 1, fp);
     fwrite(&current_lang, sizeof(int), 1, fp);
     fwrite(hiscores, sizeof(hiscores), 1, fp);
+    fwrite(&btn_hit, sizeof(int), 1, fp);
     fclose(fp);
 }
 
@@ -508,6 +521,8 @@ static void set_language(int lang)
     WinSendMsg(hwndOptSub, MM_SETITEMTEXT,
                MPFROMSHORT(IDM_TOPTEN),        MPFROMP(tr(STR_MENU_TOPTEN)));
     WinSendMsg(hwndOptSub, MM_SETITEMTEXT,
+               MPFROMSHORT(IDM_KEYMAP),        MPFROMP(tr(STR_MENU_KEYMAP)));
+    WinSendMsg(hwndOptSub, MM_SETITEMTEXT,
                MPFROMSHORT(IDM_SUBMENU_LANG),  MPFROMP(tr(STR_MENU_LANGUAGE)));
     WinSendMsg(hwndOptSub, MM_SETITEMTEXT,
                MPFROMSHORT(IDM_FRAME),         MPFROMP(tr(STR_MENU_FRAME)));
@@ -531,33 +546,54 @@ static void set_language(int lang)
   ======================================================================*/
 static void ToggleFrame(void)
 {
-    SWP swp;
+    RECTL rcl;
+    SWP   swp;
+    LONG  cw, ch, nx, ny, nw, nh;
+
+    /* keep the client area the size it is now */
+    WinQueryWindowRect(hwndClient, &rcl);
+    cw = rcl.xRight - rcl.xLeft;
+    ch = rcl.yTop   - rcl.yBottom;
+
     if (!bFrameHidden) {
-        WinSendMsg(hwndMenuBar, MM_SETITEMATTR,
-                   MPFROM2SHORT(IDM_FRAME, TRUE),
-                   MPFROM2SHORT(MIA_CHECKED, MIA_CHECKED));
+        /* hide: park the frame controls in the object window */
         WinSetParent(hwndTitleBar,  hwndObject, FALSE);
         WinSetParent(hwndSysMenu,   hwndObject, FALSE);
         WinSetParent(hwndMenuBar,   hwndObject, FALSE);
         WinSetParent(hwndMinButton, hwndObject, FALSE);
         bFrameHidden = TRUE;
-        WinSendMsg(hwndFrame, WM_UPDATEFRAME,
-                   (MPARAM)(FCF_TITLEBAR|FCF_SYSMENU|FCF_MINMAX|FCF_MENU), NULL);
     } else {
+        /* show: PM clears WS_VISIBLE when a window is reparented to the
+           object window, so every control must be shown again */
         WinSetParent(hwndTitleBar,  hwndFrame, FALSE);
         WinSetParent(hwndSysMenu,   hwndFrame, FALSE);
         WinSetParent(hwndMenuBar,   hwndFrame, FALSE);
         WinSetParent(hwndMinButton, hwndFrame, FALSE);
+        WinShowWindow(hwndTitleBar,  TRUE);
+        WinShowWindow(hwndSysMenu,   TRUE);
+        WinShowWindow(hwndMenuBar,   TRUE);
+        WinShowWindow(hwndMinButton, TRUE);
         bFrameHidden = FALSE;
-        WinQueryWindowPos(hwndFrame, &swp);
-        WinSetWindowPos(hwndFrame, HWND_TOP,
-                        swp.x, swp.y, swp.cx, swp.cy,
-                        SWP_MOVE|SWP_SIZE);
-        WinInvalidateRect(hwndFrame, NULL, TRUE);
-        WinSendMsg(hwndMenuBar, MM_SETITEMATTR,
-                   MPFROM2SHORT(IDM_FRAME, TRUE),
-                   MPFROM2SHORT(MIA_CHECKED, 0));
     }
+
+    WinSendMsg(hwndFrame, WM_UPDATEFRAME,
+               MPFROMLONG(FCF_TITLEBAR|FCF_SYSMENU|FCF_MINBUTTON|FCF_MENU), MPVOID);
+
+    /* resize the frame for the new layout, keeping its top left corner */
+    rcl.xLeft = 0;  rcl.yBottom = 0;  rcl.xRight = cw;  rcl.yTop = ch;
+    WinCalcFrameRect(hwndFrame, &rcl, FALSE);
+    nw = rcl.xRight - rcl.xLeft;
+    nh = rcl.yTop   - rcl.yBottom;
+    WinQueryWindowPos(hwndFrame, &swp);
+    nx = swp.x;
+    ny = swp.y + swp.cy - nh;
+    WinSetWindowPos(hwndFrame, HWND_TOP, nx, ny, nw, nh, SWP_MOVE|SWP_SIZE);
+    WinInvalidateRect(hwndFrame, NULL, TRUE);
+    WinUpdateWindow(hwndFrame);
+
+    WinSendMsg(hwndMenuBar, MM_SETITEMATTR,
+               MPFROM2SHORT(IDM_FRAME, TRUE),
+               MPFROM2SHORT(MIA_CHECKED, bFrameHidden ? MIA_CHECKED : 0));
 }
 
 /*======================================================================
@@ -643,6 +679,92 @@ MRESULT EXPENTRY EnterNameDlgProc(HWND hwnd, ULONG msg, MPARAM mp1, MPARAM mp2)
 }
 
 /*======================================================================
+   KEY MAPPING (mouse button that hits a block)
+  ======================================================================*/
+#define WM_KM_INPUT   (WM_USER + 2)
+
+static PFNWP pfnKmEntry;
+
+/* mouse button number (1 left, 2 right, 3 middle) of a button message, 0 = none */
+static int BtnOf(ULONG msg)
+{
+    switch (msg) {
+        case WM_BUTTON1DOWN: case WM_BUTTON1UP: return 1;
+        case WM_BUTTON2DOWN: case WM_BUTTON2UP: return 2;
+        case WM_BUTTON3DOWN: case WM_BUTTON3UP: return 3;
+    }
+    return 0;
+}
+
+/* Capture box: the first click only focuses it, a click on the focused box
+   assigns the mouse button used */
+static MRESULT EXPENTRY KmEntryProc(HWND hwnd, ULONG msg, MPARAM mp1, MPARAM mp2)
+{
+    SHORT btn = 0;
+
+    switch (msg) {
+        case WM_BUTTON1DOWN: btn = 1; break;
+        case WM_BUTTON2DOWN: btn = 2; break;
+        case WM_BUTTON3DOWN: btn = 3; break;
+        case WM_CHAR:
+            if (!(SHORT1FROMMP(mp1) & KC_KEYUP) &&
+                (SHORT1FROMMP(mp1) & KC_VIRTUALKEY) &&
+                (SHORT2FROMMP(mp2) == VK_TAB   || SHORT2FROMMP(mp2) == VK_BACKTAB ||
+                 SHORT2FROMMP(mp2) == VK_ENTER || SHORT2FROMMP(mp2) == VK_NEWLINE ||
+                 SHORT2FROMMP(mp2) == VK_ESC))
+                break;                      /* the dialog handles these */
+            return (MRESULT)TRUE;           /* swallow every other key  */
+    }
+    if (btn && WinQueryFocus(HWND_DESKTOP) == hwnd) {
+        WinPostMsg(WinQueryWindow(hwnd, QW_PARENT), WM_KM_INPUT,
+                   MPFROMLONG(btn), MPVOID);
+        return (MRESULT)TRUE;
+    }
+    return pfnKmEntry(hwnd, msg, mp1, mp2);
+}
+
+MRESULT EXPENTRY KeyMapDlgProc(HWND hwnd, ULONG msg, MPARAM mp1, MPARAM mp2)
+{
+    static int tmp;
+
+    switch (msg) {
+        case WM_INITDLG:
+            tmp = btn_hit;
+            WinSetWindowText(hwnd, tr(STR_KM_TITLE));
+            WinSetDlgItemText(hwnd, IDC_KM_HINT,    tr(STR_KM_HINT));
+            WinSetDlgItemText(hwnd, IDC_KM_LABEL,   tr(STR_KM_ACT0));
+            WinSetDlgItemText(hwnd, DID_OK,         tr(STR_OK));
+            WinSetDlgItemText(hwnd, DID_CANCEL,     tr(STR_CANCEL));
+            WinSetDlgItemText(hwnd, IDC_KM_DEFAULT, tr(STR_KM_DEFAULT));
+            pfnKmEntry = WinSubclassWindow(WinWindowFromID(hwnd, IDC_KM_ENTRY), KmEntryProc);
+            WinSetDlgItemText(hwnd, IDC_KM_ENTRY, tr(STR_KM_BTN1 + tmp - 1));
+            return (MRESULT)FALSE;
+
+        case WM_KM_INPUT:
+            tmp = (int)LONGFROMMP(mp1);
+            WinSetDlgItemText(hwnd, IDC_KM_ENTRY, tr(STR_KM_BTN1 + tmp - 1));
+            return 0;
+
+        case WM_COMMAND:
+            switch (COMMANDMSG(&msg)->cmd) {
+                case DID_OK:
+                    btn_hit = tmp;
+                    WinDismissDlg(hwnd, TRUE);
+                    return 0;
+                case DID_CANCEL:
+                    WinDismissDlg(hwnd, FALSE);
+                    return 0;
+                case IDC_KM_DEFAULT:
+                    tmp = 1;
+                    WinSetDlgItemText(hwnd, IDC_KM_ENTRY, tr(STR_KM_BTN1));
+                    return 0;
+            }
+            break;
+    }
+    return WinDefDlgProc(hwnd, msg, mp1, mp2);
+}
+
+/*======================================================================
    CLIENT WINDOW PROCEDURE
   ======================================================================*/
 MRESULT EXPENTRY ClientWndProc(HWND hwnd, ULONG msg, MPARAM mp1, MPARAM mp2)
@@ -714,12 +836,15 @@ MRESULT EXPENTRY ClientWndProc(HWND hwnd, ULONG msg, MPARAM mp1, MPARAM mp2)
         return 0;
 
     case WM_BUTTON1DOWN:
+    case WM_BUTTON2DOWN:
+    case WM_BUTTON3DOWN:
     {
         SHORT mx = SHORT1FROMMP(mp1);
         SHORT my = SHORT2FROMMP(mp1);
         int xVal, yVal;
         HPS hps;
 
+        if (BtnOf(msg) != btn_hit) break;   /* not the mapped button */
         if (game_over) return 0;
         WinSetPointer(HWND_DESKTOP, curMaletDwn);
 
@@ -748,7 +873,10 @@ MRESULT EXPENTRY ClientWndProc(HWND hwnd, ULONG msg, MPARAM mp1, MPARAM mp2)
     }
 
     case WM_BUTTON1UP:
+    case WM_BUTTON2UP:
+    case WM_BUTTON3UP:
     {
+        if (BtnOf(msg) != btn_hit) break;
         WinSetPointer(HWND_DESKTOP, curMalet);
         if (flash_x != -1) {
             HPS hps = WinGetPS(hwnd);
@@ -790,6 +918,11 @@ MRESULT EXPENTRY ClientWndProc(HWND hwnd, ULONG msg, MPARAM mp1, MPARAM mp2)
 
         case IDM_FRAME:
             ToggleFrame();
+            break;
+
+        case IDM_KEYMAP:
+            WinDlgBox(HWND_DESKTOP, hwnd, KeyMapDlgProc,
+                      NULLHANDLE, IDD_KEYMAP, NULL);
             break;
 
         case IDM_SAVEONEXIT:
